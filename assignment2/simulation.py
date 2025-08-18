@@ -113,9 +113,9 @@ class Vehicle(Node):
                 thrust_limit=10)
         self.pub_depth = self.create_publisher(Float64, 'depth', 10)
         self.pub_x = self.create_publisher(Float64, 'x', 10)
-        self.pub_setpoint = self.create_publisher(Float64, 'setpoint', 10)
+        self.pub_setpoint = self.create_publisher(Float64, 'setpoint_depth', 10)
         self.pub_setpoint_x = self.create_publisher(Float64, 'setpoint_x', 10)
-        self.sub_thrust = self.create_subscription(Float64, 'thrust', self.vertical_callback, 10)
+        self.sub_thrust = self.create_subscription(Float64, 'thrust_depth', self.vertical_callback, 10)
         self.sub_thrust_x = self.create_subscription(Float64, 'thrust_x', self.horizontal_callback, 10)
         self.timer = self.create_timer(time_interval, self.timer_callback)
         self.count_within_threshold = 0

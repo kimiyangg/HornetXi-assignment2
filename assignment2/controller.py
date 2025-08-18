@@ -15,14 +15,14 @@ class PID_Controller(Node):
         self.setpoint_x = 0
         self.x = 0
         
-        # Publishers for thrust (vertical) and thrust_x (horizontal)
-        self.pub = self.create_publisher(Float64, 'thrust', 10)
+        # Publishers for thrust_depth (vertical) and thrust_x (horizontal)
+        self.pub = self.create_publisher(Float64, 'thrust_depth', 10)
         self.pub_x = self.create_publisher(Float64, 'thrust_x', 10)
         
         # Subscribers for setpoints and current states
         self.sub_setpoint = self.create_subscription(
                 Float64,
-                'setpoint',
+                'setpoint_depth',
                 self.setpoint_callback,
                 10)
         self.sub_depth = self.create_subscription(
@@ -31,17 +31,10 @@ class PID_Controller(Node):
                 self.depth_callback,
                 10)
                 
-        self.sub_setpoint_x = self.create_subscription(
-                Float64,
-                'setpoint_x',
-                self.setpoint_x_callback,
-                10)
-        self.sub_x = self.create_subscription(
-                Float64,
-                'x',
-                self.x_callback,
-                10)
+        #TODO: write subscriptions for 'setpoint_x' and 'x'
         
+
+        #TODO: utilise and tune these gains
         # Gains for depth (Y axis)
         self.KP_depth = 0.0
         self.KI_depth = 0.0
@@ -72,14 +65,7 @@ class PID_Controller(Node):
     def depth_callback(self, msg):
         self.depth = msg.data 
     
-    # Callbacks for X axis
-    def setpoint_x_callback(self, msg):
-        self.setpoint_x = msg.data
-    
-    def x_callback(self, msg):
-        self.x = msg.data
-
-
+    #TODO: callbacks for 'setpoint_x' and 'x'
 
     #TODO: complete this function
     def timer_callback(self):
