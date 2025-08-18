@@ -1,11 +1,11 @@
 # Hornet X Software Assignment 2
 
 This repository contains a ROS2 package called "assignment2". It includes a simulation node and a controller node.
-Your task is to implement a 1-dimensional PID controller to control the simulated vehicle (orange box) in the simulation.
+Your task is to implement a 2-dimensional PID controller to control the simulated vehicle (orange box) in the simulation.
 
 **DO NO MODIFY "simulation.py"** (but feel free to look inside)
 
-Zip and email your solution to hornetxauv2425@gmail.com with subject [Software Homework 2] \<Name\>.
+Zip and email your solution to hornet.eleven.submission@gmail.com with subject [Software Homework 2] \<Name\>.
 
 ## Setting up the simulation
 This simulation depends on pygame. To install pygame, either run
@@ -48,12 +48,15 @@ You should see a pair of googly eyes following your cursor.
 ## Using the simulation
 The simulation publishes the following data in `std_msgs/Float64` format
 ```bash
-/depth    # current vehicle depth
-/setpoint # current setpoint
+/depth          # current vehicle depth
+/setpoint_depth # current setpoint for depth
+/x              # current vehicle x position
+/setpoint_x     # current setpoint for x position
 ```
 The simulation also subscribes to the following topic (also of `std_msgs/Float64` type)
 ```bash
-/thrust   # -4 to 4, with upwards positive
+/thrust_depth   # -4 to 4, with upwards positive
+/thrust_x
 ```
 Publishing to this topic will allow you to control the vertical thrust of the vehicle.
 
