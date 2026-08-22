@@ -60,13 +60,6 @@ before moving to the next waypoint. (A solution to this is to use time to switch
 > [!NOTE]
 > Everything below is from the template repo
 
-This repository contains a ROS2 package called "assignment2". It includes a simulation node and a controller node.
-Your task is to implement a 2-dimensional PID controller to control the simulated vehicle (orange box) in the simulation.
-
-**DO NO MODIFY "simulation.py"** (but feel free to look inside)
-
-Zip and email your solution to hornet.eleven.submission@gmail.com with subject [Software Homework 2] \<Name\>.
-
 ## Setting up the simulation
 This simulation depends on pygame. To install pygame, either run
 ```bash
