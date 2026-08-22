@@ -6,14 +6,32 @@ class PID_Controller(Node):
 
     def __init__(self):
         super().__init__("pid_controller")
-        
+
+        # Path Planning params
+        self.min_x = 0.5
+        self.max_x = 7.8
+        self.min_depth = 0.5
+        self.max_depth = 14.5
+
+        self.declare_parameter("mode", "manual") # manual or sweep
+        self.declare_parameter("n_sweeps", 3) # number of sweeps for sweep mode
+        self.mode = self.get_parameter("mode").get_parameter_value().string_value
+        self.n_sweeps = self.get_parameter("n_sweeps").get_parameter_value().integer_value
+
+        self.waypoints_x, self.waypoints_depth = self.gen_n_sweeps_waypoints(self.n_sweeps)
+        self.wp_index = 0
+
         # Depth (Y axis) control variables
-        self.setpoint = -20
-        self.depth = 0
+        self.setpoint = 0.0
+        self.depth = 0.0
+
+        # Store manually clicked setpoints for depth and x
+        self.click_depth = 0.0
+        self.click_x = 0.0
         
         # X axis control variables
-        self.setpoint_x = 20
-        self.x = 0
+        self.setpoint_x = 0.0
+        self.x = 0.0
         
         # Publishers for thrust_depth (vertical) and thrust_x (horizontal)
         self.pub = self.create_publisher(Float64, 'thrust_depth', 10)
@@ -47,12 +65,12 @@ class PID_Controller(Node):
         # Gains for depth (Y axis)
         self.KP_depth = 2.0
         self.KI_depth = 0
-        self.KD_depth = 1.2
+        self.KD_depth = 2.0
         
         # Gains for X axis (horizontal)
         self.KP_x = 2.5
         self.KI_x = 0.0
-        self.KD_x = 1.0
+        self.KD_x = 1.5
         
         self.bias = -2.0 # Is a bias necessary?
 
@@ -66,10 +84,28 @@ class PID_Controller(Node):
 
         self.timer_period = 0.05 # change PID frequency?
         self.timer = self.create_timer(self.timer_period, self.timer_callback)
-    
+
+
+    def gen_n_sweeps_waypoints(self, n_sweeps):
+        waypoints_x = []
+        waypoints_depth = []
+        depth_addition = (self.max_depth - self.min_depth) / n_sweeps
+        for i in range(n_sweeps):
+            if (i % 2 == 0):
+                waypoints_x.append(self.min_x)
+                waypoints_x.append(self.max_x)
+            else:
+                waypoints_x.append(self.max_x)
+                waypoints_x.append(self.min_x)
+            
+            waypoints_depth.append(self.min_depth + i * depth_addition)
+            waypoints_depth.append(self.min_depth + i * depth_addition)
+
+        return waypoints_x, waypoints_depth
+
     # Callbacks for Y axis
     def setpoint_callback(self, msg):
-        self.setpoint = msg.data
+        self.click_depth = msg.data
 
     def depth_callback(self, msg):
         self.depth = msg.data 
@@ -77,13 +113,24 @@ class PID_Controller(Node):
     #TODO: callbacks for 'setpoint_x' and 'x'
 
     def setpoint_x_callback(self, msg):
-        self.setpoint_x = msg.data
+        self.click_x = msg.data
 
     def x_callback(self, msg):
         self.x = msg.data
 
     #TODO: complete this function
     def timer_callback(self):
+        if self.mode == "sweep":
+            self.setpoint_x = self.waypoints_x[self.wp_index]
+            self.setpoint = self.waypoints_depth[self.wp_index]
+                # if setpoint is reached, move to next waypoint
+            if abs(self.x - self.setpoint_x) < 0.1 and abs(self.depth - self.setpoint) < 0.1:
+                self.wp_index += 1
+                if self.wp_index >= len(self.waypoints_x):
+                    self.wp_index = 0
+        else:
+            self.setpoint = self.click_depth
+            self.setpoint_x = self.click_x
         # PID for depth
         thrust = Float64()
         error_depth = self.setpoint - self.depth
