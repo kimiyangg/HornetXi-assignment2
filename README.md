@@ -22,14 +22,14 @@ sth near 0 and let the robot float up again. Therefore, I added a constant `-2.0
 I found that number by trial and erroring different thrust values and -2.0 is nearly the most 
 optimal in keepting the robot to stay still in the water.
 
-**No I term.** KI is left at 0. Once the feed-forward was in, there was nothing for an
+**No KI term.** KI is left at 0. Once the feed-forward was in, there was nothing for an
 integral to correct. When I tried adding one it actually mostly made the overshoot worse,
 so i removed it in the end.
 
 The setpoint can be reached at about 5-8 seconds, with minor overshoot. Increasing more on KD 
 could slightly improve it, but in reality KD is quite sensitive to noise so prob not the best idea.
 
-## Tier 2 — n sweeps in a search polygon
+### n sweeps in a search polygon
 
 I use the same PID and FeedForward values as the normal manaual clicking mode. However
 I wrote a seperate logic in generating the waypoints and setpoints
