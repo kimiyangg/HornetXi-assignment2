@@ -6,7 +6,7 @@ ROS 2 Jazzy PID controller: depth + horizontal control, plus n-sweep search cove
 
 ## Design and Thought Process
 
-### PID - Reaching a setpoint within 9 seconds
+### PID
 
 Both directions use the same PD structure
 
@@ -29,7 +29,7 @@ so i removed it in the end.
 The setpoint can be reached at about 5-8 seconds, with minor overshoot. Increasing more on KD 
 could slightly improve it, but in reality KD is quite sensitive to noise so prob not the best idea.
 
-### n sweeps in a search polygon
+### n  sweeps in a search polygon
 
 I use the same PID and FeedForward values as the normal manaual clicking mode. However
 I wrote a seperate logic in generating the waypoints and setpoints
